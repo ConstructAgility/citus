@@ -1,0 +1,34 @@
+# ----------
+# $Id$
+#
+# Regression tests that exercise distributed planning/execution functionality.
+#
+# Note that we use variant comparison files to test version dependent regression
+# test results. For more information:
+# http://www.postgresql.org/docs/9.5/static/regress-variant.html
+# ----------
+
+# ---
+# Tests around schema changes, these are run first, so there's no preexisting objects.
+# ---
+test: multi_extension
+test: multi_table_ddl
+
+# ----------
+# The following distributed tests depend on creating a partitioned table and
+# uploading data to it.
+# ----------
+test: multi_create_table
+test: multi_stage_data
+
+test: multi_basic_queries multi_complex_expressions multi_verify_no_subquery
+test: multi_single_relation_subquery
+test: multi_binary_master_copy_format
+
+test: multi_simple_queries
+
+# ---------
+# multi_copy creates hash and range-partitioned tables and performs COPY
+# ---------
+test: multi_copy
+

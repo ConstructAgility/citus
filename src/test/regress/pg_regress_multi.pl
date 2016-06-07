@@ -301,8 +301,14 @@ for my $extension (@extensions)
 # Append remaining ARGV arguments to pg_regress arguments
 push(@arguments, @ARGV);
 
+my $startTime = time();
+
 # Finally run the tests
 system("$pgxsdir/src/test/regress/pg_regress", @arguments) == 0
     or die "Could not run regression tests";
+
+my $endTime = time();
+
+print "Finished in ". ($endTime - $startTime)." seconds. \n";
 
 exit 0;
