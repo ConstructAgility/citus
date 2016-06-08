@@ -47,7 +47,8 @@ check-worker: all
 
 check-multi: all tempinstall-main
 	$(pg_regress_multi_check) --load-extension=citus \
-	--server-option=citus.task_tracker_delay=30ms \
+	--server-option=citus.task_tracker_delay=10ms \
+	--server-option=citus.remote_task_check_interval=5ms \
 	-- $(MULTI_REGRESS_OPTS) --schedule=$(citus_abs_srcdir)/multi_schedule $(EXTRA_TESTS)
 
 check-multi-fdw: all tempinstall-main
@@ -61,13 +62,16 @@ check-multi-hll: all tempinstall-main
 check-multi-task-tracker-extra: all tempinstall-main
 	$(pg_regress_multi_check) --load-extension=citus \
 	--server-option=citus.task_executor_type=task-tracker \
-	--server-option=citus.task_tracker_delay=30ms \
+	--server-option=citus.task_tracker_delay=10ms \
+	--server-option=citus.remote_task_check_interval=5ms \
 	--server-option=citus.large_table_shard_count=1 \
 	-- $(MULTI_REGRESS_OPTS) --schedule=$(citus_abs_srcdir)/multi_task_tracker_extra_schedule $(EXTRA_TESTS)
 
+
 check-multi-binary: all tempinstall-main
 	$(pg_regress_multi_check) --load-extension=citus \
-	--server-option=citus.task_tracker_delay=30ms \
+	--server-option=citus.task_tracker_delay=10ms \
+	--server-option=citus.remote_task_check_interval=5ms \
 	--server-option=citus.binary_worker_copy_format=on \
 	-- $(MULTI_REGRESS_OPTS) --schedule=$(citus_abs_srcdir)/multi_binary_schedule $(EXTRA_TESTS)
 
