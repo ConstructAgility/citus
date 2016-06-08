@@ -1875,20 +1875,13 @@ WorkerAggregateExpressionList(Aggref *originalAggregate,
 		CountDistinctErrorRate == DISABLE_DISTINCT_APPROXIMATION &&
 		walkerContext->repartitionSubquery)
 	{
-		List *columnList = pull_var_clause_default((Node *) originalAggregate);
+		Aggref *aggregate = (Aggref *) copyObject(originalAggregate);
+		List *columnList = pull_var_clause_default((Node *) aggregate);
 		ListCell *columnCell = NULL;
-		List *processedColumnList = NIL;
-
 		foreach(columnCell, columnList)
 		{
 			Var *column = (Var *) lfirst(columnCell);
-			if (list_member(processedColumnList, column))
-			{
-				continue;
-			}
-
-			processedColumnList = lappend(processedColumnList, column);
-			workerAggregateList = lappend(workerAggregateList, copyObject(column));
+			workerAggregateList = list_append_unique(workerAggregateList, column);
 		}
 
 		walkerContext->createGroupByClause = true;
