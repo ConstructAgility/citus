@@ -1078,12 +1078,17 @@ static StringInfo
 ConstructCopyStatement(CopyStmt *copyStatement, int64 shardId)
 {
 	StringInfo command = makeStringInfo();
+	StringInfo relationName = makeStringInfo();
+
 	char *qualifiedName = NULL;
 
-	qualifiedName = quote_qualified_identifier(copyStatement->relation->schemaname,
-											   copyStatement->relation->relname);
+	appendStringInfo(relationName, "%s_%ld", copyStatement->relation->relname,
+					 shardId);
 
-	appendStringInfo(command, "COPY %s_%ld ", qualifiedName, shardId);
+	qualifiedName = quote_qualified_identifier(copyStatement->relation->schemaname,
+											   relationName->data);
+
+	appendStringInfo(command, "COPY %s ", qualifiedName);
 
 	appendStringInfoString(command, "FROM STDIN WITH (FORMAT BINARY)");
 

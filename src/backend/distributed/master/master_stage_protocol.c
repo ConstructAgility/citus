@@ -459,14 +459,13 @@ UpdateShardStatistics(int64 shardId)
 	shardQualifiedName = LoadShardAlias(relationId, shardId);
 	if (shardQualifiedName == NULL)
 	{
-		char *relationName = get_rel_name(relationId);
-
+		StringInfo relationName = makeStringInfo();
 		Oid schemaId = get_rel_namespace(relationId);
 		char *schemaName = get_namespace_name(schemaId);
 
-		shardQualifiedName = quote_qualified_identifier(schemaName, relationName);
-
-		AppendShardIdToName(&shardQualifiedName, shardId);
+		appendStringInfo(relationName, "%s_%ld", get_rel_name(relationId), shardId);
+		shardQualifiedName = quote_qualified_identifier(schemaName,
+														relationName->data);
 	}
 
 	shardPlacementList = FinalizedShardPlacementList(shardId);
